@@ -1,8 +1,6 @@
 from services.open_ai_service import extract_criteria, compose_workout
-# Import corrigé (algolia au lieu de angolia)
 from services.algolia_service import search_exercises
-# from services.firebase_service import save_workout  # facultatif
-import json # Ajouté pour un affichage propre
+import json 
 
 def main():
     print("=== Assistant IA Coach ===")
@@ -17,7 +15,7 @@ def main():
 
     print(f"Critères extraits: {criteria}")
 
-    print("\n🔍 Recherche d'exercices...")
+    print("\nRecherche d'exercices...")
     exercises = search_exercises(criteria)
     print(f"{len(exercises)} exercices trouvés")
     
@@ -25,7 +23,7 @@ def main():
     if not exercises:
         print("Aucun exercice trouvé pour ces critères. Tentative de génération d'une séance par défaut...")
 
-    print("\n🧠 Génération de la séance (JSON)...")
+    print("\nGénération de la séance (JSON)...")
     # On passe la 'query' originale en plus des critères et exercices
     workout_json_string = compose_workout(query, criteria, exercises)
     
@@ -37,9 +35,6 @@ def main():
     except json.JSONDecodeError:
         print("--- Erreur: L'IA n'a pas retourné un JSON valide ---")
         print(workout_json_string) # Affiche la sortie brute pour le débogage
-
-    # Optionnel : save_workout(query, criteria, exercises, workout_json_string)
-    # print("Séance sauvegardée dans Firestore ✅")
 
 if __name__ == "__main__":
     main()

@@ -79,7 +79,7 @@ Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les ty
     "tagIds": [],
     "exercices": [
       {
-        "exRef": "exercices/objectID",
+        "exRef": "exercices/exRef",
         "notes": "string HTML",
         "sets": number,
         "restPause": number,

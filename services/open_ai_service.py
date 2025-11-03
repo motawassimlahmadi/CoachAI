@@ -1,7 +1,7 @@
 import json
 from openai import OpenAI
 from config import OPENAI_API_KEY
-from prompt import PROMPT ,  EXERCICE_PROMPT # C'est le GROS prompt pour la séance JSON
+from prompt import PROMPT ,  EXERCICE_PROMPT
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
@@ -77,7 +77,7 @@ def compose_workout(user_query: str, criteria: dict, exercises: list) -> str:
 
     En te basant sur la demande originale et les exercices disponibles, crée la séance d'entraînement complète.
     Tu DOIS suivre à la lettre les instructions de formatage JSON définies dans le message système (ton rôle).
-    Assure-toi d'utiliser les `exRef` fournies dans la liste d'exercices ci-dessus.
+    Assure-toi d'utiliser les `exRef` fournies dans la liste d'exercices ci-dessus dans le format suivant "/exercices/exRef" où exRef est le code reference.
     Si aucun exercice n'est fourni, crée une séance pertinente (ex: poids du corps) avec des `exRef` plausibles (ex: "/exercices/pompes").
     Retourne UNIQUEMENT le JSON.
     """

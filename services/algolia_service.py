@@ -6,10 +6,12 @@ index = client.init_index(ALGOLIA_INDEX_NAME)
 
 def search_exercises(criteria: dict):
     filters = []
+    muscle_filters = []
     
     if "partiesDuCorps" in criteria and criteria["partiesDuCorps"]:
         for muscle in criteria["partiesDuCorps"]:
-            filters.append(f"partiesDuCorps:{muscle}") 
+            muscle_filters.append(f'partiesDuCorps:{muscle}')
+             
     
     if "equipment" in criteria and criteria["equipment"]:
         filters.append(f'equipment:"{criteria["equipment"]}"')
@@ -19,8 +21,17 @@ def search_exercises(criteria: dict):
 
     if "brand" in criteria and criteria["brand"]:
         filters.append(f'brand:"{criteria['brand']}"')
+        
     
-    filter_str = " AND ".join(filters)
+    if len(criteria["partiesDuCorps"]) >= 2:
+        # Regroupe plusieurs muscles avec OR
+        muscle_filter_str = " OR ".join(muscle_filters)
+        # Ajoute des parenthèses pour éviter les ambiguïtés dans Algolia
+        filter_str = f"({muscle_filter_str}) AND " + " AND ".join(filters)
+    else:
+        # Si un seul ou aucun muscle, on n’ajoute que les autres filtres
+        filter_str = " AND ".join(filters)
+    
     
     print(f"--- Filtre Algolia --- \n{filter_str}")
     

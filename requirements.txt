@@ -1,0 +1,5 @@
+openai
+firebase-admin
+algoliasearch>=3.0,<4.0
+python-dotenv
+langchain

@@ -44,7 +44,7 @@ def extract_criteria(user_query: str) -> dict:
         return {} # Retourner un dict vide en cas d'échec
     
     
-def compose_workout(user_query: str, criteria: dict, exercises: list) -> str:
+def compose_workout(user_query: str, criteria: dict, exercises: list , seance_type:str) -> str:
     """
     Compose une séance d'entraînement JSON structurée à partir de la requête, 
     des critères et d'une liste d'exercices.
@@ -54,12 +54,14 @@ def compose_workout(user_query: str, criteria: dict, exercises: list) -> str:
     # On suppose que "objectID" d'Algolia est la "exRef"
     exercise_list_for_prompt = [
         {
-            "name": ex.get("nameFr", "Nom inconnu"),
             "exRef": ex.get("objectID", f"/exercices/ref_inconnue"), # Utiliser l'objectID comme ref
             "muscles": ex.get("partiesDuCorps", []),
-            "equipment": ex.get("equipment", "")
+            "equipment": ex.get("equipment", ""),
+            "brand":ex.get("brand","")
         } for ex in exercises # Limite à 10 comme dans le code original
     ]
+    
+    print(exercise_list_for_prompt)
 
     # Le message système est maintenant le PROMPT détaillé de 'prompt.py'
     system_prompt = EXERCICE_PROMPT
@@ -71,14 +73,19 @@ def compose_workout(user_query: str, criteria: dict, exercises: list) -> str:
 
     Voici les critères que j'ai extraits :
     {json.dumps(criteria, indent=2)}
+    
+    Voici le type de séance à impérativement utiliser :
+    {seance_type}
 
     Et voici une liste d'exercices pertinents trouvés dans notre base de données (Algolia) que tu peux utiliser :
     {json.dumps(exercise_list_for_prompt, indent=2, ensure_ascii=False)}
 
-    En te basant sur la demande originale et les exercices disponibles, crée la séance d'entraînement complète.
+    En te basant sur la demande originale et les exercices disponibles, crée la séance d'entraînement complète en te basant sur {seance_type}
     Tu DOIS suivre à la lettre les instructions de formatage JSON définies dans le message système (ton rôle).
-    Assure-toi d'utiliser les `exRef` fournies dans la liste d'exercices ci-dessus dans le format suivant "/exercices/exRef" où exRef est le code reference.
-    Si aucun exercice n'est fourni, crée une séance pertinente (ex: poids du corps) avec des `exRef` plausibles (ex: "/exercices/pompes").
+    Assure-toi d'utiliser les `exRef` fournies dans la liste d'exercices ci-dessus dans le format suivant "/exercices/exRef" où exRef est le objectID.
+    NB : exRef doit OBLIGATOIREMENT être un objectID type : "MtR6kf74Mq8LQwpGYJ2f" .
+    Si aucun exercice n'est fourni, crée une séance pertinente à partir de {seance_type} avec des `exRef` plausibles (ex: "/exercices/pompes").
+    Dans le cas où aucun exercice n'est fourni et uniquement dans ce cas précise que l'exercice n'est pas tiré de la base de données.
     Retourne UNIQUEMENT le JSON.
     """
     

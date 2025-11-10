@@ -62,6 +62,9 @@ EXERCICE_PROMPT = """
 Les exercices doivent êtres récupérés de l'index "exercices", tu peux utiliser les "attributesForFaceting" disponibles
 Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les types d'équipement dans "attributesForFaceting" => "equipment"
 
+  Tu as un paramètre que tu dois prendre en compte c'est {type_de_seance} qui est extremement important . Tu dois te baser sur ce critère pour organiser la séance .
+  
+
   ## Format de sortie STRICT
 
   Tu DOIS répondre UNIQUEMENT avec un objet JSON valide, sans
@@ -71,6 +74,9 @@ Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les ty
   ## Structure JSON requise
 
   ```json
+  
+  "type":{type_de_seance},
+  "name": {type_de_seance} + "Section"
   {
     "workoutName": "string (obligatoire)",
     "description": "string (optionnel)",
@@ -79,7 +85,7 @@ Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les ty
     "tagIds": [],
     "exercices": [
       {
-        "exRef": "exercices/exRef",
+        "exRef": "exercices/exRef".
         "notes": "string HTML",
         "sets": number,
         "restPause": number,

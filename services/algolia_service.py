@@ -26,14 +26,17 @@ def search_exercises(criteria: dict):
     if len(criteria["partiesDuCorps"]) >= 2:
         # Regroupe plusieurs muscles avec OR
         muscle_filter_str = " OR ".join(muscle_filters)
-        # Ajoute des parenthèses pour éviter les ambiguïtés dans Algolia
-        filter_str = f"({muscle_filter_str}) AND " + " AND ".join(filters)
+        if filters:
+            filter_str = f"({muscle_filter_str}) AND " + " AND ".join(filters)
+        else:
+            filter_str = muscle_filter_str
     else:
         # Si un seul ou aucun muscle, on n’ajoute que les autres filtres
         filter_str = " AND ".join(filters)
     
+    if filters:
+        print(f"--- Filtre Algolia --- \n{filter_str}")
     
-    print(f"--- Filtre Algolia --- \n{filter_str}")
     
     results = index.search("", {"filters": filter_str, "hitsPerPage": 10})
     return results["hits"]

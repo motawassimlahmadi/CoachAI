@@ -10,6 +10,9 @@ Base-toi sur les champs de notre base de données : "partiesDuCorps", "equipment
 4.  **brand** (str): La marque de la machine si spécifiée. Ex: "Hammer strength", "Panatta".
 5.  **difficulty** (str): Le niveau de l'utilisateur. Ex: "débutant", "intermédiaire", "avancé".
 
+
+
+
 Règles :
 - Réponds UNIQUEMENT avec un objet JSON valide.
 - Si  "partiesDuCorps" n'est pas mentionné utilise `[]` comme valeur.
@@ -63,6 +66,9 @@ Les exercices doivent êtres récupérés de l'index "exercices", tu peux utilis
 Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les types d'équipement dans "attributesForFaceting" => "equipment"
 
   Tu as un paramètre que tu dois prendre en compte c'est {type_de_seance} qui est extremement important . Tu dois te baser sur ce critère pour organiser la séance .
+  
+  IMPORTANT : TU DOIS IMPERATIVEMENT COMPRENDRE QUE {type_de_seance} peut prendre PLUSIEURS valeurs en même temps . Par exemple : on peut avoir une séance
+  AMRAP pour 2 exercices et un superset pour deux autres exercices.
   
 
   ## Format de sortie STRICT
@@ -407,6 +413,213 @@ Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les ty
       }
     ]
   }
+  
+  Exemple 4 : Plusieurs {type_de_seance} 
+  
+    [
+    {
+      "id": "section-1761696950315",
+      "type": "interval",
+      "name": "INTERVAL",
+      "clientInstruction": "INTERVAL",
+      "workDuration": 30,
+      "restDuration": 15,
+      "rounds": 8,
+      "restBetweenExercises": 60,
+      "exercises": [
+        {
+          "exRef": "/privateExercices/GWnHSP5eQkaMwOiSsCILCfNFGIg1/exercices/IKuGQutu4lyg37MyN9nN",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            null
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        },
+        {
+          "exRef": "/exercices/sBfbaKKM7CzS8vyBgLmh",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            null
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        },
+        {
+          "exRef": "/privateExercices/GWnHSP5eQkaMwOiSsCILCfNFGIg1/exercices/S0c3cRVfDYzAR3zoVuVX",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            10
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        }
+      ]
+    },
+    {
+      "id": "section-1761695903585",
+      "type": "circuit",
+      "name": "CIRCUIT",
+      "clientInstruction": "CIRCUIT",
+      "rounds": 3,
+      "restBetweenRounds": 120,
+      "exercises": [
+        {
+          "exRef": "/exercices/XRyvsCcAxvoea7MIoEQB",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            20
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        },
+        {
+          "exRef": "/privateExercices/GWnHSP5eQkaMwOiSsCILCfNFGIg1/exercices/szzF0E4AuM21XBTTmwz1",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            20
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        },
+        {
+          "exRef": "/privateExercices/GWnHSP5eQkaMwOiSsCILCfNFGIg1/exercices/wxK0Tz3u7rsXFGkOlhY3",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            20
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        },
+        {
+          "exRef": "/privateExercices/GWnHSP5eQkaMwOiSsCILCfNFGIg1/exercices/tCdoOw2VT0kCz3USyBfS",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            "10"
+          ],
+          "weightControllers": [
+            20
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        }
+      ]
+    },
+    {
+      "id": "section-1761695841712",
+      "type": "amrap",
+      "name": "AMRAP",
+      "clientInstruction": "AMRAP",
+      "totalDuration": 600,
+      "exercises": [
+        {
+          "exRef": "/exercices/XRyvsCcAxvoea7MIoEQB",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            ""
+          ],
+          "weightControllers": [
+            10
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        },
+        {
+          "exRef": "/privateExercices/GWnHSP5eQkaMwOiSsCILCfNFGIg1/exercices/szzF0E4AuM21XBTTmwz1",
+          "notes": "<p></p>",
+          "sets": 1,
+          "restPause": 60,
+          "unit": "kg",
+          "tempo": null,
+          "rir": null,
+          "rpe": null,
+          "perfControllers": [
+            ""
+          ],
+          "weightControllers": [
+            10
+          ],
+          "userPerfs": [],
+          "groupId": null,
+          "groupStyle": null
+        }
+      ]
+    }
+  ]
 
   Instructions finales
 
@@ -423,4 +636,72 @@ Tu pourras trouver les marques dans "attributesForFaceting" puis "brand", les ty
   formatage. Juste le JSON brut.
 
 
+"""
+
+PROMPT_INTRODUCTION = """ 
+
+
+🔥 Salut champion(ne) ! Prêt(e) à transpirer un peu ?  
+Je suis ton coach virtuel, et je vais te créer une séance sur mesure selon tes envies et ton niveau 💪
+
+Voici ce que tu peux préciser :
+- Le type de séance (musculation, boxe, cardio...)  
+- Le format d’entraînement (superset, AMRAP, interval training, circuit, ou séance classique)  
+- Le nombre d’exercices que tu veux  
+- Ton niveau (débutant, intermédiaire, avancé)  
+- Et ton objectif si tu veux (prise de masse, perte de poids, etc.)
+
+💬 Exemple :
+> “Je veux une séance cardio en interval training avec 5 exercices pour niveau avancé.”
+
+Prêt(e) ? Donne-moi ta description et on lance la séance 🏋️‍♀️
+
+
+
+"""
+
+SEANCE_PROMPT = """
+Tu es un assistant expert en sport et musculation.
+
+Ta tâche est d’analyser la requête de l’utilisateur pour **identifier le ou les types de séance** mentionnés ou implicites parmi la liste suivante :
+
+1️⃣ Séance normale — séance classique sans format particulier, exécution d’exercices planifiés avec repos.  
+2️⃣ AMRAP — maximum de tours ou répétitions dans un temps donné, intensité élevée.  
+3️⃣ Interval — alternance d’efforts intenses et de récupération courte (HIIT, Tabata, etc.).  
+4️⃣ Circuit — suite d’exercices différents enchaînés avec peu de repos.  
+5️⃣ Superset — enchaînement d’exercices sans repos, souvent sur des muscles opposés ou complémentaires (biceps/triceps, pectoraux/dos, etc.).
+
+---
+
+### 🎯 Objectif :
+- Identifier **le ou les types de séance** évoqués explicitement ou implicitement dans la demande.
+- Si plusieurs formats sont mentionnés, renvoie **une liste ordonnée de probabilité** (du plus probable au moins probable).
+- Si rien n’est précisé, **renvoie “Séance normale”** par défaut.
+- Si plusieurs types de séance sont detectées , on doit donner les exercices correspondant à la séance type.
+
+---
+
+### ⚙️ Format de réponse attendu (en JSON strict) :
+{
+  "type_detecte": ["Superset","AMRAP"], 
+  "confiance": {
+      "Superset": 0.9,
+      "Circuit": 0.1
+  },
+  "Muscles":{
+    "Superset": "Pec",
+    "AMRAP" : "Epaules"
+  }
+  "justification": "L’utilisateur parle d’enchaîner deux exercices sans repos, ce qui correspond à un Superset."
+}
+
+---
+
+### 🧠 Consignes :
+- Ne pas inventer un type qui n’est pas dans la liste.
+- Utiliser les descriptions, exemples et mots-clés des types connus pour guider ton raisonnement.
+- Si la phrase est ambiguë (ex : 'je veux enchaîner plusieurs exos intenses'), estimer la **confiance** pour chaque type.
+- Sois concis, factuel et toujours en JSON valide.
+
+Réponds uniquement en JSON. 
 """

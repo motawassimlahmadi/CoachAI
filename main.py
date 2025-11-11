@@ -2,9 +2,10 @@ from services.open_ai_service import extract_criteria, compose_workout
 from services.algolia_service import search_exercises
 import json 
 from seance import seance_similarity
+from prompt import PROMPT_INTRODUCTION
 
 def main():
-    print("=== Assistant IA Coach ===")
+    print(PROMPT_INTRODUCTION)
     
     # 1ere étape : Query de l'utilisateur
     

@@ -1,56 +1,75 @@
-PROMPT = """
-Tu es un assistant qui analyse les requêtes d'utilisateurs pour une application de fitness.
-Extrais les critères suivants de la requête et retourne-les dans un objet JSON strict.
-Base-toi sur les champs de notre base de données : "partiesDuCorps", "equipment", "discipline", "brand", et "difficulty".
+ANALYSIS_PROMPT = """
+Tu es un assistant expert en fitness. Analyse la requête de l'utilisateur et extrais les informations suivantes dans un objet JSON strict.
+
+1.  **criteria**: Les critères de recherche (basés sur les champs "partiesDuCorps", "equipment", "discipline", "brand", "difficulty").
+2.  **seance**: Le ou les types de séance (parmi "Séance normale", "AMRAP", "Interval Training", "Circuit", "Superset").
 
 1.  **partiesDuCorps** (list[str]): Les groupes musculaires. Ex: ["jambes", "pectoraux"].
 2.  **equipment** (str): L'équipement utilisé. Ex: "machines", "haltères", "poids du corps".
-    * Si l'utilisateur dit "sans matériel" ou "poids du corps", utilise la valeur "poids de corps".
+* Si l'utilisateur dit "sans matériel" ou "poids du corps", utilise la valeur "poids de corps".
 3.  **discipline** (str): La discipline. Ex: "musculation", "pédagogie", "cardio".
 4.  **brand** (str): La marque de la machine si spécifiée. Ex: "Hammer strength", "Panatta".
 5.  **difficulty** (str): Le niveau de l'utilisateur. Ex: "débutant", "intermédiaire", "avancé".
 
-
-
+1️⃣ Séance normale — séance classique sans format particulier, exécution d’exercices planifiés avec repos.  
+2️⃣ AMRAP — maximum de tours ou répétitions dans un temps donné, intensité élevée.  
+3️⃣ Interval — alternance d’efforts intenses et de récupération courte (HIIT, Tabata, etc.).  
+4️⃣ Circuit — suite d’exercices différents enchaînés avec peu de repos.  
+5️⃣ Superset — enchaînement d’exercices sans repos, souvent sur des muscles opposés ou complémentaires (biceps/triceps, pectoraux/dos, etc.).
 
 Règles :
-- Réponds UNIQUEMENT avec un objet JSON valide.
-- Si  "partiesDuCorps" n'est pas mentionné utilise `[]` comme valeur.
+- Si aucun type de séance n'est spécifié, utilise "Séance normale".
+- Si aucun critère n'est mentionné, utilise des valeurs nulles ou des listes vides.
+- Réponds UNIQUEMENT avec l'objet JSON.
+- Les types doivent être exactement comme les détails. Si le type est "AMRAP" , détail on doit avoir que AMPRAP .
+- Le nombre par défaut du nombre d'exercices est de 4 au minimum si l'utilisateur ne précise RIEN. Adapte toi à la séance
 
 ---
 Exemple 1
-Requête: "Je veux une séance pour les jambes sur machine Hammer Strength, niveau intermédiaire."
+Requête: "Je veux une séance pecs/épaules. Je veux faire trois exos pecs en AMRAP et deux exos épaules en superset."
 JSON:
 {
-  "partiesDuCorps": ["jambes"],
-  "equipment": "machines",
-  "discipline": "musculation",
-  "brand": "Hammer strength",
-  "difficulty": "intermédiaire"
+  "criteria": {
+    "partiesDuCorps": ["pectoraux", "épaules"],
+    "equipment": null,
+    "discipline": null,
+    "brand": null,
+    "difficulty": null
+  },
+  "seance": {
+    "types": ["AMRAP", "Superset"],
+    "justification": "L'utilisateur a spécifiquement demandé un AMRAP pour les pecs et un Superset pour les épaules.",
+    "details": {
+      "AMRAP": ["pectoraux"],
+      "Superset": ["épaules"]
+    }
+  },
+  "Exercices":{
+    "Nombre": [5],
+    "Détails": {"Pectoraux": 3 , "Epaules": 2}
+  }
 }
 
 ---
 Exemple 2
-Requête: "Un truc cardio pour les pecs et les bras au poids du corps, pour débutant."
+Requête: "Un truc cardio pour les jambes au poids du corps."
 JSON:
 {
-  "partiesDuCorps": ["pectoraux", "bras"],
-  "equipment": "poids du corps",
-  "discipline": "cardio",
-  "brand": null,
-  "difficulty": "débutant"
-}
-
----
-Exemple 3
-Requête: "Donne-moi des exercices d'abdos"
-JSON:
-{
-  "partiesDuCorps": ["abdominaux"],
-  "equipment": null,
-  "discipline": null,
-  "brand": null,
-  "difficulty": null
+  "criteria": {
+    "partiesDuCorps": ["jambes"],
+    "equipment": "poids du corps",
+    "discipline": "cardio",
+    "brand": null,
+    "difficulty": null
+  },
+  "seance": {
+    "types": ["Séance normale"],
+    "justification": "Aucun format spécifique (AMRAP, Circuit...) n'a été demandé.",
+    "details": {}
+  },
+  "Nombre d'exercice":{
+    "Nombre": [] # Par défaut 4
+  }
 }
 """
 
@@ -660,48 +679,3 @@ Prêt(e) ? Donne-moi ta description et on lance la séance 🏋️‍♀️
 
 """
 
-SEANCE_PROMPT = """
-Tu es un assistant expert en sport et musculation.
-
-Ta tâche est d’analyser la requête de l’utilisateur pour **identifier le ou les types de séance** mentionnés ou implicites parmi la liste suivante :
-
-1️⃣ Séance normale — séance classique sans format particulier, exécution d’exercices planifiés avec repos.  
-2️⃣ AMRAP — maximum de tours ou répétitions dans un temps donné, intensité élevée.  
-3️⃣ Interval — alternance d’efforts intenses et de récupération courte (HIIT, Tabata, etc.).  
-4️⃣ Circuit — suite d’exercices différents enchaînés avec peu de repos.  
-5️⃣ Superset — enchaînement d’exercices sans repos, souvent sur des muscles opposés ou complémentaires (biceps/triceps, pectoraux/dos, etc.).
-
----
-
-### 🎯 Objectif :
-- Identifier **le ou les types de séance** évoqués explicitement ou implicitement dans la demande.
-- Si plusieurs formats sont mentionnés, renvoie **une liste ordonnée de probabilité** (du plus probable au moins probable).
-- Si rien n’est précisé, **renvoie “Séance normale”** par défaut.
-- Si plusieurs types de séance sont detectées , on doit donner les exercices correspondant à la séance type.
-
----
-
-### ⚙️ Format de réponse attendu (en JSON strict) :
-{
-  "type_detecte": ["Superset","AMRAP"], 
-  "confiance": {
-      "Superset": 0.9,
-      "Circuit": 0.1
-  },
-  "Muscles":{
-    "Superset": "Pec",
-    "AMRAP" : "Epaules"
-  }
-  "justification": "L’utilisateur parle d’enchaîner deux exercices sans repos, ce qui correspond à un Superset."
-}
-
----
-
-### 🧠 Consignes :
-- Ne pas inventer un type qui n’est pas dans la liste.
-- Utiliser les descriptions, exemples et mots-clés des types connus pour guider ton raisonnement.
-- Si la phrase est ambiguë (ex : 'je veux enchaîner plusieurs exos intenses'), estimer la **confiance** pour chaque type.
-- Sois concis, factuel et toujours en JSON valide.
-
-Réponds uniquement en JSON. 
-"""

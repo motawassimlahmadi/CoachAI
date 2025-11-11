@@ -1,7 +1,6 @@
-from services.open_ai_service import extract_criteria, compose_workout
+from services.open_ai_service import analyze_query, compose_workout
 from services.algolia_service import search_exercises
 import json 
-from seance import seance_similarity
 from prompt import PROMPT_INTRODUCTION
 
 def main():
@@ -14,16 +13,22 @@ def main():
     
     # Fin DE LA PREMIERE ETAPE -----------------------------
     
-    # 2eme etape : Critère 
-    criteria = extract_criteria(query) # Retourne les critères pour la séance
-    type_seance = seance_similarity(query) # Retourne la séance propice pour l'entrainement.
+    # 2eme etape : Critère et type de seance
     
-    if not criteria:
-        print("Désolé, je n'ai pas pu analyser les critères de votre requête.")
-        return
-
-    print(f"Critères extraits: {criteria}")
-    print(f"Séance extraite : {type_seance}")
+    analysis_query = analyze_query(query)
+    
+    if not analysis_query:
+        print(f"Desolé je n'ai pas pu analyser votre requête : {query}")
+        return 
+    
+    criteria = analysis_query.get("criteria",{})
+    seance_info = analysis_query.get("seance",{"types":["seance normale"]})
+    exercices = analysis_query.get("Exercices",{"Nombre" : [4]})
+    
+    print(f"Critères : {criteria}")
+    print(f"Seance info : {seance_info}")
+    print(f"Exercices : {exercices}")
+    
     
     # FIN DE LA 2EME ETAPE -----------------------------
 
@@ -41,14 +46,11 @@ def main():
 
     print("\nGénération de la séance (JSON)...")
     
-    
-    
-    
     # FIN DE LA RECHERCHE -----------------------------
     
     
     # On passe la 'query' originale en plus des critères et exercices
-    workout_json_string = compose_workout(query, criteria, exercises , type_seance)
+    workout_json_string = compose_workout(query, criteria, exercises , seance_info , exercices)
     
     print("\n=== Séance JSON générée ===")
     try:

@@ -4,39 +4,35 @@ from config import ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_INDEX_NAME
 client = SearchClient.create(ALGOLIA_APP_ID, ALGOLIA_API_KEY)
 index = client.init_index(ALGOLIA_INDEX_NAME)
 
+
+
 def search_exercises(criteria: dict):
-    filters = []
-    muscle_filters = []
+    all_filters = []
     
+    # 1. Filtre Muscles (avec OR)
     if "partiesDuCorps" in criteria and criteria["partiesDuCorps"]:
-        for muscle in criteria["partiesDuCorps"]:
-            muscle_filters.append(f'partiesDuCorps:{muscle}')
+        muscle_filters = [f'partiesDuCorps:{muscle}' for muscle in criteria["partiesDuCorps"]]
+        all_filters.append(f"({ ' OR '.join(muscle_filters) })") 
              
-    
+    # 2. Autres filtres (avec AND)
     if "equipment" in criteria and criteria["equipment"]:
-        filters.append(f'equipment:"{criteria["equipment"]}"')
+        all_filters.append(f'equipment:"{criteria["equipment"]}"')
         
     if "discipline" in criteria and criteria["discipline"]:
-        filters.append(f'discipline:"{criteria['discipline']}"')
+        all_filters.append(f'discipline:"{criteria["discipline"]}"')
 
     if "brand" in criteria and criteria["brand"]:
-        filters.append(f'brand:"{criteria['brand']}"')
+        all_filters.append(f'brand:"{criteria["brand"]}"')
         
     
-    if len(criteria["partiesDuCorps"]) >= 2:
-        # Regroupe plusieurs muscles avec OR
-        muscle_filter_str = " OR ".join(muscle_filters)
-        if filters:
-            filter_str = f"({muscle_filter_str}) AND " + " AND ".join(filters)
-        else:
-            filter_str = muscle_filter_str
-    else:
-        # Si un seul ou aucun muscle, on n’ajoute que les autres filtres
-        filter_str = " AND ".join(filters)
+    # if "difficulty" in criteria and criteria["difficulty"]:
+    #     all_filters.append(f'difficulty:"{criteria["difficulty"]}"')
+
+    # Combine tous les filtres avec AND
+    filter_str = " AND ".join(all_filters)
     
-    if filters:
+    if filter_str:
         print(f"--- Filtre Algolia --- \n{filter_str}")
     
-    
-    results = index.search("", {"filters": filter_str, "hitsPerPage": 10})
+    results = index.search("", {"filters": filter_str, "hitsPerPage": 30})
     return results["hits"]

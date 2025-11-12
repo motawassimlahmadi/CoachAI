@@ -59,7 +59,7 @@ def main():
         print(json.dumps(workout_data, indent=2, ensure_ascii=False))
     except json.JSONDecodeError:
         print("--- Erreur: L'IA n'a pas retourné un JSON valide ---")
-        print(workout_json_string) # Affiche la sortie brute pour le débogage
+        print(workout_json_string) 
 
 if __name__ == "__main__":
     main()

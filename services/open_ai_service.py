@@ -51,15 +51,15 @@ def compose_workout(user_query: str, criteria: dict, exercises: list , seance_ty
             "muscles": ex.get("partiesDuCorps", []),
             "equipment": ex.get("equipment", ""),
             "brand":ex.get("brand","")
-        } for ex in exercises # Limite à 10 comme dans le code original
+        } for ex in exercises 
     ]
     
     print(exercise_list_for_prompt)
 
-    # Le message système est maintenant le PROMPT détaillé de 'prompt.py'
+    # Le message système
     system_prompt = EXERCICE_PROMPT
 
-    # Le message utilisateur contextualise la demande
+    
     user_content = f"""
     Voici la demande originale de l'utilisateur :
     "{user_query}"

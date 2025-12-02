@@ -37,7 +37,7 @@ def main():
     
     
     print("\nRecherche d'exercices...")
-    exercises = search_exercises(criteria)
+    exercises = search_exercises(criteria , query)
     print(f"{len(exercises)} exercices trouvés")
     
 

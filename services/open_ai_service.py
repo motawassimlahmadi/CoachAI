@@ -16,8 +16,8 @@ def analyze_query(query:str) -> dict :
     """
     
     llm = ChatOpenAI(
-        model="gpt-4o-mini",
-        temperature=0
+        model="gpt-4.1",
+        temperature=0.2
     )
     
     messages = [
@@ -89,7 +89,7 @@ def compose_workout(user_query: str, criteria: dict, exercises: list , seance_ty
     print("\n--- Requête de composition de séance (JSON) envoyée ---")
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4.1",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_content}

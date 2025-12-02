@@ -6,33 +6,55 @@ index = client.init_index(ALGOLIA_INDEX_NAME)
 
 
 
-def search_exercises(criteria: dict):
-    all_filters = []
+def search_exercises(criteria: dict, search_query: str):
+    """
+    Recherche intelligente avec gestion dynamique des filtres et facettes.
     
-    # 1. Filtre Muscles (avec OR)
-    if "partiesDuCorps" in criteria and criteria["partiesDuCorps"]:
-        muscle_filters = [f'partiesDuCorps:{muscle}' for muscle in criteria["partiesDuCorps"]]
-        all_filters.append(f"({ ' OR '.join(muscle_filters) })") 
-             
-    # 2. Autres filtres (avec AND)
-    if "equipment" in criteria and criteria["equipment"]:
-        all_filters.append(f'equipment:"{criteria["equipment"]}"')
-        
-    if "discipline" in criteria and criteria["discipline"]:
-        all_filters.append(f'discipline:"{criteria["discipline"]}"')
+    """
+    
+    # 1. Préparation des Facet Filters (Syntaxe tableau d'Algolia)
+    # La structure : [FILTER_AND, [FILTER_OR_1, FILTER_OR_2], FILTER_AND]
+    facet_filters = []
 
-    if "brand" in criteria and criteria["brand"]:
-        all_filters.append(f'brand:"{criteria["brand"]}"')
-        
-    
-    # if "difficulty" in criteria and criteria["difficulty"]:
-    #     all_filters.append(f'difficulty:"{criteria["difficulty"]}"')
+    fields_map = {
+        "partiesDuCorps": "partiesDuCorps",
+        "equipment": "equipment",
+        "discipline": "discipline",
+        "brand": "brand"
+    }
 
-    # Combine tous les filtres avec AND
-    filter_str = " AND ".join(all_filters)
-    
-    if filter_str:
-        print(f"--- Filtre Algolia --- \n{filter_str}")
-    
-    results = index.search("", {"filters": filter_str, "hitsPerPage": 30})
-    return results["hits"]
+    for key, algolia_attr in fields_map.items():
+        value = criteria.get(key)
+        
+        if value:
+            # Si c'est une liste (ex: plusieurs muscles), on crée un sous-tableau (Logique OR)
+            if isinstance(value, list):
+                or_filters = [f"{algolia_attr}:{item}" for item in value]
+                facet_filters.append(or_filters)
+            # Si c'est une valeur simple, on l'ajoute directement (Logique AND implicite)
+            else:
+                facet_filters.append(f"{algolia_attr}:{value}")
+
+    # 2. Configuration de la recherche
+    search_params = {
+        "facetFilters": facet_filters,
+        "hitsPerPage": 30
+    }
+
+    if facet_filters:
+        print(f"--- Filtres Actifs (Facets) --- \n{facet_filters}")
+
+
+    try:
+        search_query = ""
+        results = index.search(search_query, search_params)
+        if len(results["hits"]) > 0:
+            return results["hits"]
+        else:
+            results = index.search(search_query)
+            return results["hits"]
+    except Exception as e:
+        print(f"Erreur Algolia : {e}")
+        return []
+
+
